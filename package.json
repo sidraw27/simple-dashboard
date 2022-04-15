@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build": "nuxi build",
+    "dev": "nuxi dev",
+    "start": "node .output/server/index.mjs",
+    "lint": "eslint {**/*,*}.{js,ts,vue}"
+  },
+  "devDependencies": {
+    "@pinia/nuxt": "^0.1.8",
+    "@popperjs/core": "^2.11.2",
+    "@typescript-eslint/eslint-plugin": "^5.10.0",
+    "@typescript-eslint/parser": "^5.10.0",
+    "eslint": "^8.7.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-import-resolver-nuxt": "^1.0.1",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-nuxt": "^3.1.0",
+    "eslint-plugin-typescript": "^0.14.0",
+    "eslint-plugin-vue": "^8.3.0",
+    "nuxt3": "^3.0.0-27375427.d07d572",
+    "pinia": "^2.0.9",
+    "pre-commit": "^1.2.2",
+    "typescript": "^4.5.4"
+  },
+  "pre-commit": [
+    "lint"
+  ]
+}
