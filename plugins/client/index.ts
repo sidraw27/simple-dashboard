@@ -23,6 +23,7 @@ export default defineNuxtPlugin(() => {
       return errorHandler(error);
     },
   );
+  axios.defaults.withCredentials = true;
 
   const getUrl = (target: string) => {
     const endpoint = `/${prefix}/${target}`;

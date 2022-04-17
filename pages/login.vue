@@ -5,19 +5,19 @@
     >
       <div class="p-5 bg-white md:flex-1">
         <h3 class="my-4 text-2xl font-semibold text-gray-700">
-          Sign in
+          Dashboard
         </h3>
-        <form
-          action="#"
-          class="flex flex-col space-y-5"
-        >
+        <div class="flex flex-col space-y-5">
           <div class="flex flex-col space-y-1">
             <label
               for="email"
               class="text-sm font-semibold text-gray-500"
-            >Email address</label>
+            >
+              Email address
+            </label>
             <input
               id="email"
+              v-model="loginDto.email"
               type="email"
               autofocus
               class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
@@ -34,28 +34,39 @@
             </div>
             <input
               id="password"
+              v-model="loginDto.password"
               type="password"
               class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+              @keyup.enter="login"
             >
           </div>
           <div>
             <button
-              type="submit"
               class="w-full px-4 py-2 text-lg font-semibold text-white transition-colors duration-300 bg-blue-500 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-blue-200 focus:ring-4"
+              @click="login"
             >
-              Log in
+              Sign in
             </button>
           </div>
+
+          <div class="flex flex-col space-y-5">
+            <span class="flex items-center justify-center font-normal text-red-500">
+              {{ loginFailMessage }}
+            </span>
+          </div>
+
           <div class="flex flex-col space-y-5">
             <span class="flex items-center justify-center space-x-2">
               <span class="h-px bg-gray-400 w-14" />
               <span class="font-normal text-gray-500">or login with</span>
               <span class="h-px bg-gray-400 w-14" />
             </span>
+
             <div class="flex flex-col space-y-4">
               <a
-                href="#"
+                href="javascript: void(0)"
                 class="flex items-center justify-center px-4 py-2 space-x-2 transition-colors duration-300 border border-red-500 rounded-md group hover:bg-gray-800 focus:outline-none"
+                @click="oauthLogin('google')"
               >
                 <span>
                   <svg
@@ -85,13 +96,16 @@
                     />
                   </svg>
                 </span>
-                <span class="text-sm font-medium text-red-800 group-hover:text-white">
+                <span
+                  class="text-sm font-medium text-red-800 group-hover:text-white"
+                >
                   Google
                 </span>
               </a>
               <a
-                href="#"
+                href="javascript: void(0)"
                 class="flex items-center justify-center px-4 py-2 space-x-2 transition-colors duration-300 border border-blue-500 rounded-md group hover:bg-blue-500 focus:outline-none"
+                @click="oauthLogin('facebook')"
               >
                 <span>
                   <svg
@@ -102,13 +116,16 @@
                     height="20"
                     viewBox="0 0 48 48"
                     style=" fill:#000000;"
-                  ><path
-                    fill="#039be5"
-                    d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"
-                  /><path
-                    fill="#fff"
-                    d="M26.572,29.036h4.917l0.772-4.995h-5.69v-2.73c0-2.075,0.678-3.915,2.619-3.915h3.119v-4.359c-0.548-0.074-1.707-0.236-3.897-0.236c-4.573,0-7.254,2.415-7.254,7.917v3.323h-4.701v4.995h4.701v13.729C22.089,42.905,23.032,43,24,43c0.875,0,1.729-0.08,2.572-0.194V29.036z"
-                  /></svg>
+                  >
+                    <path
+                      fill="#039be5"
+                      d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"
+                    />
+                    <path
+                      fill="#fff"
+                      d="M26.572,29.036h4.917l0.772-4.995h-5.69v-2.73c0-2.075,0.678-3.915,2.619-3.915h3.119v-4.359c-0.548-0.074-1.707-0.236-3.897-0.236c-4.573,0-7.254,2.415-7.254,7.917v3.323h-4.701v4.995h4.701v13.729C22.089,42.905,23.032,43,24,43c0.875,0,1.729-0.08,2.572-0.194V29.036z"
+                    />
+                  </svg>
                 </span>
                 <span class="text-sm font-medium text-blue-500 group-hover:text-white">
                   Facebook
@@ -116,11 +133,45 @@
               </a>
             </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { serviceFactory, Services } from '~/services';
+import { LoginDto } from '~/services/auth/dtos';
+import { reactive } from '@vue/reactivity';
+import { AuthStore, useAuthStore } from '~/stores/auth';
+import { AuthService } from '~/services/auth';
+
+const { $client } = useNuxtApp();
+const service = <AuthService>serviceFactory($client, Services.Auth);
+const config = useRuntimeConfig();
+const authStore = useAuthStore() as unknown as AuthStore;
+
+if (authStore.isLogin) {
+  await navigateTo('/');
+}
+
+const loginDto = reactive<LoginDto>({});
+const loginFailMessage = ref<string | null>();
+
+watch(loginDto, () => {
+  loginFailMessage.value = null;
+});
+
+const login = async () => {
+  try {
+    await service.login(loginDto);
+    await navigateTo('/');
+  } catch (error) {
+    loginFailMessage.value = error as string;
+  }
+};
+
+const oauthLogin = async (provider: 'google' | 'facebook') => {
+  window.location.href = `${config.public.api.baseUrl}/auth/${provider}`;
+};
 </script>

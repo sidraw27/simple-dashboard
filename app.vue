@@ -5,6 +5,23 @@
 </template>
 
 <script setup lang="ts">
+import { AuthStore, useAuthStore } from '~/stores/auth';
+import { AuthService } from './services/auth';
+import { serviceFactory, Services } from './services';
+
+const { $client } = useNuxtApp();
+const authStore = useAuthStore() as unknown as AuthStore;
+const service = <AuthService>serviceFactory($client, Services.Auth);
+
+authStore.isInit = true;
+
+try {
+  const accessToken = await service.reAuth();
+  authStore.login(accessToken);
+} catch (error) {
+  authStore.logout();
+  await navigateTo('/login');
+}
 </script>
 
 <style>
