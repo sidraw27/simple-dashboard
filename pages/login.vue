@@ -132,6 +132,21 @@
                 </span>
               </a>
             </div>
+
+            <div class="flex flex-col space-y-5">
+              <span class="flex items-center justify-center space-x-2">
+                <span class="h-px bg-gray-400 w-14" />
+                <span class="font-normal text-gray-500">or signup</span>
+                <span class="h-px bg-gray-400 w-14" />
+              </span>
+
+              <NuxtLink
+                to="signup"
+                class="w-full text-center px-4 py-2 text-lg font-semibold text-white transition-colors duration-300 bg-gray-300 rounded-md shadow hover:bg-gray-600 focus:outline-none focus:ring-blue-200 focus:ring-4"
+              >
+                Sign up
+              </NuxtLink>
+            </div>
           </div>
         </div>
       </div>
