@@ -80,6 +80,10 @@ import { RegisterDto } from '~/services/user/dtos/register.dto';
 import { serviceFactory, Services } from '~/services';
 import { UserService } from '~/services/user';
 
+definePageMeta({
+  layout: 'clear',
+});
+
 const { $client } = useNuxtApp();
 const service = <UserService>serviceFactory($client, Services.User);
 

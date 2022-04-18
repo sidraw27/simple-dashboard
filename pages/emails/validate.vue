@@ -7,6 +7,10 @@ import { serviceFactory, Services } from '~/services';
 import { UserService } from '~/services/user';
 import { ValidateEmailDto } from '~/services/user/dtos/validate-email.dto';
 
+definePageMeta({
+  layout: 'clear',
+});
+
 const { $client } = useNuxtApp();
 const service = <UserService>serviceFactory($client, Services.User);
 const route = useRoute();

@@ -161,6 +161,10 @@ import { reactive } from '@vue/reactivity';
 import { AuthStore, useAuthStore } from '~/stores/auth';
 import { AuthService } from '~/services/auth';
 
+definePageMeta({
+  layout: 'clear',
+});
+
 const { $client } = useNuxtApp();
 const service = <AuthService>serviceFactory($client, Services.Auth);
 const config = useRuntimeConfig();
