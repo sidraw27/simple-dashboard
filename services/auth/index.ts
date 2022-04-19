@@ -1,5 +1,6 @@
 import { LoginDto } from '~/services/auth/dtos';
 import { AuthStore, useAuthStore } from '~/stores/auth';
+import { ValidateEmailDto } from '~/services/user/dtos/validate-email.dto';
 
 export class AuthService {
   private readonly client;
@@ -25,6 +26,14 @@ export class AuthService {
     await this.client.setPrefix(this.PREFIX).post('logout');
 
     authStore.logout();
+  }
+
+  public validateEmail(dto: ValidateEmailDto) {
+    return this.client.setPrefix(this.PREFIX).patch<{ accessToken: string }>('validate-email', dto);
+  }
+
+  public resendValidateEmail() {
+    return this.client.setPrefix(this.PREFIX).post('resend-validate-email');
   }
 
   public async reAuth() {

@@ -6,8 +6,13 @@ export default defineNuxtRouteMiddleware((to) => {
 
   if (!exceptRoutes.includes(to.name as string)) {
     const authStore = useAuthStore() as unknown as AuthStore;
-    if (authStore.isInit && !authStore.isLogin) {
-      return navigateTo('/login');
+    if (authStore.isInit) {
+      if (!authStore.isLogin) {
+        return navigateTo('/login');
+      }
+      if (!authStore.isVerify && to.name !== 'unvalidated') {
+        return navigateTo('/unvalidated');
+      }
     }
   }
 });

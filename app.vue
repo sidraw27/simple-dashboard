@@ -18,6 +18,9 @@ authStore.isInit = true;
 try {
   const accessToken = await service.reAuth();
   authStore.login(accessToken);
+  if (!authStore.isVerify && useRoute().name !== 'emails-validate') {
+    await navigateTo('/unvalidated');
+  }
 } catch (error) {
   authStore.logout();
   await navigateTo('/login');
