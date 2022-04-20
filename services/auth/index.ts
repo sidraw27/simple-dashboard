@@ -36,8 +36,16 @@ export class AuthService {
     return this.client.setPrefix(this.PREFIX).post('resend-validate-email');
   }
 
-  public async reAuth() {
-    const { accessToken } = await this.client.setPrefix(this.PREFIX).post<{ accessToken: string }>('');
+  public async reAuth(isForceRefresh = false) {
+    let payload = {};
+
+    if (isForceRefresh) {
+      payload = {
+        forceRefresh: true,
+      };
+    }
+
+    const { accessToken } = await this.client.setPrefix(this.PREFIX).post<{ accessToken: string }>('', payload);
 
     return accessToken;
   }

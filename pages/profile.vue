@@ -20,7 +20,7 @@
                   Name
                 </label>
                 <input
-                  v-model="name"
+                  v-model="namePatchDto.name"
                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
                   type="text"
                 >
@@ -42,7 +42,10 @@
             </div>
 
             <div class="flex justify-end mt-4">
-              <button class="px-4 py-2 bg-gray-800 text-gray-200 rounded-md hover:bg-gray-700 focus:outline-none focus:bg-gray-700">
+              <button
+                class="px-4 py-2 bg-gray-800 text-gray-200 rounded-md hover:bg-gray-700 focus:outline-none focus:bg-gray-700"
+                @click="updateName"
+              >
                 Save
               </button>
             </div>
@@ -68,6 +71,7 @@
                   Old Password
                 </label>
                 <input
+                  v-model="passwordPatchDto.oldPassword"
                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
                   type="password"
                 >
@@ -80,6 +84,7 @@
                   New Password
                 </label>
                 <input
+                  v-model="passwordPatchDto.password"
                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
                   type="password"
                 >
@@ -92,6 +97,7 @@
                   New Password Confirmation
                 </label>
                 <input
+                  v-model="passwordPatchDto.passwordConfirmation"
                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
                   type="password"
                 >
@@ -99,7 +105,10 @@
             </div>
 
             <div class="flex justify-end mt-4">
-              <button class="px-4 py-2 bg-gray-800 text-gray-200 rounded-md hover:bg-gray-700 focus:outline-none focus:bg-gray-700">
+              <button
+                class="px-4 py-2 bg-gray-800 text-gray-200 rounded-md hover:bg-gray-700 focus:outline-none focus:bg-gray-700"
+                @click="resetPassword"
+              >
                 Save
               </button>
             </div>
@@ -111,8 +120,37 @@
 </template>
 
 <script setup lang="ts">
-import { AuthStore, useAuthStore, LoginType } from '~/stores/auth';
+import { AuthStore, LoginType, useAuthStore } from '~/stores/auth';
+import { serviceFactory, Services } from '~/services';
+import { UserService } from '~/services/user';
+import { PatchDto } from '~/services/user/dtos/patch.dto';
+import { AuthService } from '~/services/auth';
 
+const { $client } = useNuxtApp();
+const userService = <UserService>serviceFactory($client, Services.User);
+const authService = <AuthService>serviceFactory($client, Services.Auth);
 const authStore = useAuthStore() as unknown as AuthStore;
-const name = ref<string|null>(authStore.name);
+
+const namePatchDto = reactive<PatchDto>({
+  name: authStore.name as string,
+});
+
+const passwordPatchDto = reactive<PatchDto>({
+  oldPassword: undefined,
+  password: undefined,
+  passwordConfirmation: undefined,
+});
+
+const updateName = async () => {
+  await userService.update(authStore.uuid as string, namePatchDto);
+  const accessToken = await authService.reAuth(true);
+  authStore.login(accessToken);
+};
+
+const resetPassword = async () => {
+  await userService.update(authStore.uuid as string, passwordPatchDto);
+  await authService.logout();
+
+  return navigateTo('/login');
+};
 </script>
