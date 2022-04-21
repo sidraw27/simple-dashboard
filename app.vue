@@ -1,4 +1,9 @@
 <template>
+  <Html lang="en-US">
+    <Head>
+      <Title>Simple dashboard demo</Title>
+    </Head>
+  </Html>
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
