@@ -45,7 +45,7 @@
 
               <div class="mx-5">
                 <h4 class="text-2xl font-semibold text-gray-700">
-                  0
+                  {{ statistics.totalUsers }}
                 </h4>
                 <div class="text-gray-500">
                   Users
@@ -75,7 +75,7 @@
 
               <div class="mx-5">
                 <h4 class="text-2xl font-semibold text-gray-700">
-                  0
+                  {{ statistics.todayActiveUsers }}
                 </h4>
                 <div class="text-gray-500">
                   Active Users
@@ -105,7 +105,7 @@
 
               <div class="mx-5">
                 <h4 class="text-2xl font-semibold text-gray-700">
-                  0
+                  {{ statistics.daysAvgActiveUsers }}
                 </h4>
                 <div class="text-gray-500">
                   Avg Active Users
@@ -132,6 +132,15 @@
 </template>
 
 <script setup lang="ts">
+import { serviceFactory, Services } from '~/services';
+import { UserService } from '~/services/user';
+
+const { $client } = useNuxtApp();
+
+const service = <UserService>serviceFactory($client, Services.User);
+
+const statistics = await service.getStatistics();
+
 const tableItems = [
   {
     name: 'sidraw',
