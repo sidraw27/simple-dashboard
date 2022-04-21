@@ -34,7 +34,7 @@
                 </label>
                 <input
                   disabled="disabled"
-                  value="sidraw.fr@gmail.com"
+                  :value="authStore.email"
                   class="block shadow appearance-none border rounded w-full py-2 px-3 text-gray-400"
                   type="email"
                 >

@@ -9,6 +9,7 @@ type State = {
   accessToken: string | null
   uuid: string | null
   name: string | null
+  email: string | null
   loginType: LoginType | null
   isVerify: boolean
   isInit: boolean
@@ -29,6 +30,7 @@ const options: Options = {
     accessToken: null,
     uuid: null,
     name: null,
+    email: null,
     loginType: null,
     isVerify: false,
     isInit: false,
@@ -44,12 +46,13 @@ const options: Options = {
     login(accessToken: string) {
       this.accessToken = accessToken;
       const {
-        uuid, name, loginType, isVerify,
+        uuid, name, email, loginType, isVerify,
       } = JSON.parse(
         Buffer.from(accessToken.split('.')[1], 'base64').toString('utf8'),
       );
       this.uuid = uuid;
       this.name = name;
+      this.email = email;
       this.loginType = loginType;
       this.isVerify = isVerify;
     },
@@ -57,6 +60,7 @@ const options: Options = {
       this.accessToken = null;
       this.uuid = null;
       this.name = null;
+      this.email = null;
       this.loginType = null;
       this.isVerify = false;
     },
