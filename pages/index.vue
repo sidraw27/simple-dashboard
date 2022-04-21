@@ -123,7 +123,11 @@
           <div
             class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200"
           >
-            <BaseTable :data="tableItems" />
+            <BaseTable
+              :data="list"
+              @prev="toPage(-1)"
+              @next="toPage(+1)"
+            />
           </div>
         </div>
       </div>
@@ -141,13 +145,23 @@ const service = <UserService>serviceFactory($client, Services.User);
 
 const statistics = await service.getStatistics();
 
-const tableItems = [
-  {
-    name: 'sidraw',
-    email: 'sidraw.fr@gmail.com',
-    register_at: new Date().toTimeString(),
-    login_times: 1,
-    last_session_at: new Date().toTimeString(),
-  },
-];
+const page = ref<number>(1);
+const list = reactive(await service.getList(page.value));
+const toPage = async (incr: number) => {
+  const current = page.value;
+
+  if (incr > 0) {
+    page.value += incr;
+  } else if (incr < 0 && page.value > 1) {
+    page.value += incr;
+  }
+
+  const data = await service.getList(page.value);
+
+  if (data.length > 0) {
+    Object.assign(list, data);
+  } else {
+    page.value = current;
+  }
+};
 </script>

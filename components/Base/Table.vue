@@ -34,10 +34,16 @@
 
       <div class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between">
         <div class="inline-flex mt-2 xs:mt-0">
-          <button class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
+          <button
+            class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"
+            @click="prev"
+          >
             Prev
           </button>
-          <button class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r">
+          <button
+            class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+            @click="next"
+          >
             Next
           </button>
         </div>
@@ -50,7 +56,15 @@
 interface Props {
   data: {[key: string]: string|number}[]
 }
-
 const props = defineProps<Props>();
-const rows = computed(() => Object.keys(props.data[0]));
+
+const emit = defineEmits(['prev', 'next']);
+const prev = () => emit('prev');
+const next = () => emit('next');
+
+const rows = computed(
+  () => Object.keys(props.data[0]).map(
+    (key) => key.split(/(?=[A-Z])/).join('_').toLowerCase(),
+  ),
+);
 </script>
