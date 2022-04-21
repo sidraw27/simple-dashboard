@@ -15,9 +15,11 @@ export class AuthService {
     const authStore = useAuthStore() as unknown as AuthStore;
 
     await this.client.setPrefix(this.PREFIX).post('login', dto);
-    const accessToken = await this.reAuth();
+    await this.reAuth();
 
-    authStore.login(accessToken);
+    if (!authStore.isVerify) {
+      this.resendValidateEmail();
+    }
   }
 
   public async logout() {
@@ -28,8 +30,9 @@ export class AuthService {
     authStore.logout();
   }
 
-  public validateEmail(dto: ValidateEmailDto) {
-    return this.client.setPrefix(this.PREFIX).patch<{ accessToken: string }>('validate-email', dto);
+  public async validateEmail(dto: ValidateEmailDto) {
+    this.client.setPrefix(this.PREFIX).patch<{ accessToken: string }>('validate-email', dto);
+    await this.reAuth();
   }
 
   public resendValidateEmail() {
@@ -37,6 +40,7 @@ export class AuthService {
   }
 
   public async reAuth(isForceRefresh = false) {
+    const authStore = useAuthStore() as unknown as AuthStore;
     let payload = {};
 
     if (isForceRefresh) {
@@ -46,7 +50,6 @@ export class AuthService {
     }
 
     const { accessToken } = await this.client.setPrefix(this.PREFIX).post<{ accessToken: string }>('', payload);
-
-    return accessToken;
+    authStore.login(accessToken);
   }
 }

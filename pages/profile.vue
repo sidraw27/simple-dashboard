@@ -143,8 +143,7 @@ const passwordPatchDto = reactive<PatchDto>({
 
 const updateName = async () => {
   await userService.update(authStore.uuid as string, namePatchDto);
-  const accessToken = await authService.reAuth(true);
-  authStore.login(accessToken);
+  await authService.reAuth(true);
 };
 
 const resetPassword = async () => {

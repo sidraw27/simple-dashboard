@@ -16,8 +16,7 @@ const service = <AuthService>serviceFactory($client, Services.Auth);
 authStore.isInit = true;
 
 try {
-  const accessToken = await service.reAuth();
-  authStore.login(accessToken);
+  await service.reAuth();
   if (!authStore.isVerify && useRoute().name !== 'emails-validate') {
     await navigateTo('/unvalidated');
   }

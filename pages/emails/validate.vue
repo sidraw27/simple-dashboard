@@ -11,7 +11,6 @@ import { ValidateEmailDto } from '~/services/user/dtos/validate-email.dto';
 import { AxiosError } from 'axios';
 import { AuthStore, useAuthStore } from '~/stores/auth';
 import { AuthService } from '~/services/auth';
-import { nextTick } from '@vue/runtime-core';
 
 definePageMeta({
   layout: 'clear',
@@ -39,7 +38,7 @@ try {
     email,
   });
 
-  nextTick(() => window.location.reload());
+  await navigateTo('/');
 } catch (error) {
   serverError.value = (error as AxiosError).response?.data.message;
 }
