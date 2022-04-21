@@ -31,7 +31,7 @@ export class AuthService {
   }
 
   public async validateEmail(dto: ValidateEmailDto) {
-    this.client.setPrefix(this.PREFIX).patch<{ accessToken: string }>('validate-email', dto);
+    await this.client.setPrefix(this.PREFIX).patch<{ accessToken: string }>('validate-email', dto);
     await this.reAuth();
   }
 

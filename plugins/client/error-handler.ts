@@ -9,6 +9,7 @@ export const errorHandler = (error: AxiosError) => {
 
   switch (response?.status) {
     case 400:
+    case 403:
       message = response?.data.message;
 
       if (message instanceof Array) {
@@ -22,11 +23,6 @@ export const errorHandler = (error: AxiosError) => {
       throw message;
     case 401:
       throw error.response?.data.message;
-    case 403:
-      navigateTo({
-        path: '/login',
-      });
-      break;
     default:
       throw error;
   }
