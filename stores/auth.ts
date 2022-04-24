@@ -12,7 +12,6 @@ type State = {
   email: string | null
   loginType: LoginType | null
   isVerify: boolean
-  isInit: boolean
 }
 type Getter = {
   isLogin: () => boolean
@@ -23,18 +22,19 @@ type Action = {
 }
 type Options = DefineStoreOptions<string, State, Getter, Action>
 
+const initState = {
+  accessToken: null,
+  uuid: null,
+  name: null,
+  email: null,
+  loginType: null,
+  isVerify: false,
+};
+
 const options: Options = {
   id: 'auth',
 
-  state: () => ({
-    accessToken: null,
-    uuid: null,
-    name: null,
-    email: null,
-    loginType: null,
-    isVerify: false,
-    isInit: false,
-  }),
+  state: () => ({ ...initState }),
 
   getters: {
     isLogin() {
@@ -50,19 +50,13 @@ const options: Options = {
       } = JSON.parse(
         Buffer.from(accessToken.split('.')[1], 'base64').toString('utf8'),
       );
-      this.uuid = uuid;
-      this.name = name;
-      this.email = email;
-      this.loginType = loginType;
-      this.isVerify = isVerify;
+
+      Object.assign(this, {
+        uuid, name, email, loginType, isVerify,
+      });
     },
     logout() {
-      this.accessToken = null;
-      this.uuid = null;
-      this.name = null;
-      this.email = null;
-      this.loginType = null;
-      this.isVerify = false;
+      Object.assign(this, initState);
     },
   },
 };
