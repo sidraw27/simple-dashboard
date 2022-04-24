@@ -115,6 +115,17 @@
           </div>
         </div>
       </div>
+
+      <div class="mt-4">
+        <div class="flex justify-end">
+          <button
+            class="px-4 py-2 bg-blue-800 text-blue-200 rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
+            @click="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </div>
   </main>
 </template>
@@ -140,6 +151,12 @@ const passwordPatchDto = reactive<PatchDto>({
   password: undefined,
   passwordConfirmation: undefined,
 });
+
+const logout = async () => {
+  await authService.logout();
+
+  return navigateTo('login');
+};
 
 const updateName = async () => {
   await userService.update(authStore.uuid as string, namePatchDto);
